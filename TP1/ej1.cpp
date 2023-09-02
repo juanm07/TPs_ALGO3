@@ -14,14 +14,6 @@ void sendero(vector<vector<char>> &tablero,vector<vector<int>> &utilizados, int 
     int N = tablero.size();
     int M =  tablero[0].size();
 
-    if(!esPosValida(N, M, fila_actual, col_actual)){ //me fijo que la posicion sea valida dentro del tablero
-        return;
-    }
-
-    if(tablero[fila_actual][col_actual] == '#'){ //si la casilla es vacía, retorno
-        return;
-    }
-
     if(fila_actual == N-1 && col_actual == M-1){ //si llegué al final del tablero, actualizo camino máximo y mínimo
         if(long_actual < camino_min){
             camino_min = long_actual;
@@ -40,7 +32,7 @@ void sendero(vector<vector<char>> &tablero,vector<vector<int>> &utilizados, int 
     for(int i=0; i<posibles_mov.size();i++){ //hago la recursion para las 4 posiciones posibles
         int nueva_fila = fila_actual + posibles_mov[i].first;
         int nueva_col = col_actual + posibles_mov[i].second;
-        if(esPosValida(N, M, nueva_fila, nueva_col) && tablero[nueva_fila][nueva_col] != '#' && utilizados[nueva_fila][nueva_col] == 0){
+        if(esPosValida(N, M, nueva_fila, nueva_col) && tablero[nueva_fila][nueva_col] != '#' && utilizados[nueva_fila][nueva_col] == 0){ //me fijo que la nueva posicion sea válida, que no sea vacía y que no haya sido utilizada
             utilizados[nueva_fila][nueva_col]  =  1;
             sendero(tablero, utilizados, nueva_fila, nueva_col, long_actual + 1);
             utilizados[nueva_fila][nueva_col]  =  0;
