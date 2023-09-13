@@ -13,10 +13,10 @@ bool ss(vector<int>&vals,int actual,vector<vector<int>>&mem,vector<vector<bool>>
     int suma = actual+vals[i];
     int resta = actual-vals[i];
     if(mem[((suma)/100)+maxiv][i] == -1){
-        mem[((suma)/100)+maxiv][i] = ss(vals,suma,mem,sign,i+1,maxiv);
+        mem[((suma)/100)+maxiv][i] = ss(vals,suma,mem,sign,i+1,maxiv); //caso en el que sumo el saldo
     }
     if(mem[((resta)/100)+maxiv][i] == -1){
-        mem[((resta)/100)+maxiv][i] = ss(vals,resta,mem,sign,i+1,maxiv);
+        mem[((resta)/100)+maxiv][i] = ss(vals,resta,mem,sign,i+1,maxiv); //caso donde resto el saldo
     }
     if(mem[((suma)/100)+maxiv][i]) sign[0][i] = true;
     if(mem[((resta)/100)+maxiv][i]) sign[1][i] = true;
@@ -49,12 +49,12 @@ int main(){
             resta-=X[i];
         }
         vector<char>res;
-        vector<vector<bool>>signos(2,vector<bool>(N));
+        vector<vector<bool>>signos(2,vector<bool>(N)); // Matriz de signos. La primera fila es '+' y la segunda es '-'. Voy asignando True en los casos donde sumé/resté el saldo y llegué a mi objetivo
         int max_v = (max(abs(sum),abs(resta)))/100;
-        vector<vector<int>>m(((2*max_v)+1),vector<int>(N,-1));
+        vector<vector<int>>m(((2*max_v)+1),vector<int>(N,-1)); // Matriz de posibles caminos. Si sumando o restando un saldo no llego a mi objetivo, asigno False. En caso de llegar, asigno True.
         ss(X,0,m,signos,0,max_v);
         for(int i = 0;i<N;i++){
-            if(signos[0][i] && signos[1][i]){
+            if(signos[0][i] && signos[1][i]){ //Caso donde tanto sumando como restando el saldo llego al objetivo
                 res.push_back('?');
             }else{
                 if(signos[0][i]){
