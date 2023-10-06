@@ -25,6 +25,9 @@ vector<pair<int,int>>obtener_vecinos(int i, int j, vector<vector<bool>> &visitad
                     pair<int,int>c = make_pair(nueva_fila,nueva_col);
                     res.push_back(c);
                 }
+            }else{
+                pair<int,int>c = make_pair(nueva_fila,nueva_col);
+                res.push_back(c);
             }
         }
     }
