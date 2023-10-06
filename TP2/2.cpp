@@ -99,7 +99,6 @@ int main(){
 
             if (res == -1) {
                 cout << "IMPOSIBLE" << endl;
-                return 0;
             } else {
                 
 
@@ -109,10 +108,8 @@ int main(){
                 int vuelta = bfs(x2, y2, x1, y1, mat, visitad, distancias, res);
                 if (vuelta == -1) {
                     cout << "IMPOSIBLE" << endl;
-                    return 0;
                 } else {
-                    cout << res << endl;
-                    cout << vuelta << endl;
+                    cout << res << " "<<vuelta<<endl;
                 }
             }
 
