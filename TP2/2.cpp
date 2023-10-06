@@ -21,7 +21,7 @@ vector<pair<int,int>>obtener_vecinos(int i, int j, vector<vector<bool>> &visitad
         if(esValido(nueva_fila, nueva_col, visitado) && (!visitado[nueva_fila][nueva_col])){ //me fijo si no se va de rango y si no lo visité
             if(mat[nueva_fila][nueva_col]!=0){ //si va a haber una manifestacion
                 if(distancias_min[i][j]+1<mat[nueva_fila][nueva_col]){ //si el tiempo que me tomo llegar a mi pos_actual + 1
-                                                                       // no se pasa del tiempo en el que arranca la manifestacion
+                                                                      // no se pasa del tiempo en el que arranca la manifestacion
                     pair<int,int>c = make_pair(nueva_fila,nueva_col);
                     res.push_back(c);
                 }
@@ -43,12 +43,15 @@ int bfs(int fila,int col,int h1,int h2,vector<vector<int>>&mat,vector<vector<boo
     while(!q.empty()){
         pair<int,int>v = q.front(); q.pop();
         vector<pair<int,int>>adyacentes = obtener_vecinos(v.first,v.second,visitado,distancias_min,mat);
+
+
         for(pair<int,int> nodo : adyacentes){
             visitado[nodo.first][nodo.second] = true;
             distancias_min[nodo.first][nodo.second] = distancias_min[v.first][v.second] + 1;
             q.push(nodo);
         }
     }
+    if(distancias_min[h1][h2] == 0)return -1;
     return distancias_min[h1][h2];
 }
 
@@ -84,15 +87,37 @@ int main(){
         int y2; //coordenada y del hospital
         cin >> y2;
 
-        vector<vector<int>> dist(cant_filas, vector<int>(cant_col, 0));
-        vector<vector<bool>> visit(cant_filas, vector<bool>(cant_col, false));
+        if ((x1 == x2) && (y1 == y2)) {
+            cout << 0 << endl;
+            cout << 0 << endl;
+        } else {
 
-        int res = bfs(x1, x2, y1, y2, mat, visit, dist, 0);
+            vector<vector<int>> dist(cant_filas, vector<int>(cant_col, 0));
+            vector<vector<bool>> visit(cant_filas, vector<bool>(cant_col, false));
 
+            int res = bfs(x1, y1, x2, y2, mat, visit, dist, 0);
 
+            if (res == -1) {
+                cout << "IMPOSIBLE" << endl;
+                return 0;
+            } else {
+                
+
+                vector<vector<int>> distancias(cant_filas, vector<int>(cant_col, 0));
+                vector<vector<bool>> visitad(cant_filas, vector<bool>(cant_col, false));
+
+                int vuelta = bfs(x2, y2, x1, y1, mat, visitad, distancias, res);
+                if (vuelta == -1) {
+                    cout << "IMPOSIBLE" << endl;
+                    return 0;
+                } else {
+                    cout << res << endl;
+                    cout << vuelta << endl;
+                }
+            }
+
+        }
         tests--;
-
-        cout<<res;
-        return res;
     }
+
 }
