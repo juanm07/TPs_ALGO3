@@ -25,7 +25,7 @@ vector<pair<int,int>>obtener_vecinos(int i, int j, vector<vector<bool>> &visitad
                     pair<int,int>c = make_pair(nueva_fila,nueva_col);
                     res.push_back(c);
                 }
-            }else{
+            }else{//si no va a haber manifestaciones agrego directo
                 pair<int,int>c = make_pair(nueva_fila,nueva_col);
                 res.push_back(c);
             }
@@ -51,7 +51,7 @@ int bfs(int fila,int col,int h1,int h2,vector<vector<int>>&mat,vector<vector<boo
             q.push(nodo);
         }
     }
-    if(distancias_min[h1][h2] == 0)return -1;
+    if(distancias_min[h1][h2] == 0)return -1; //si la distancia del nodo destino se mantuvo en 0 es porque nunca lo visite. Entonces es imposible
     return distancias_min[h1][h2];
 }
 
