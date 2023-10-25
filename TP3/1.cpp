@@ -11,7 +11,7 @@ struct Arista
 
 
 
-int dijkstra_mod(vector<vector<Arista>>&grafo,vector<pair<int,int>>&dist){
+int DAG_cm(vector<vector<Arista>>&grafo,vector<pair<int,int>>&dist){
     for(int i = 0;i<grafo.size();i++){
         for(int j = 0;j<grafo[i].size();j++){
             Arista e = grafo[i][j];
@@ -72,7 +72,7 @@ int main(){
             v2.nodo_incidente = final-1;
             lista_ady[inicio-1].push_back(v2);
         }
-        int res = dijkstra_mod(lista_ady,distancias_con_pasadizos);
+        int res = DAG_cm(lista_ady,distancias_con_pasadizos);
         cout<<res<<endl;
         tests--;
     }
