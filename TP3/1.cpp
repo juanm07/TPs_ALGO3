@@ -50,7 +50,7 @@ int main(){
             v2.nodo_incidente = final-1;
             lista_ady[inicio-1].push_back(v2);
         }
-        
+        //IDEA INSPIRADA EN EL ULTIMO EJERCICIO DE LA CLASE PRACTICA DE DAGS DEL TURNO MAÑANA
         for(int i = 0;i<lista_ady.size();i++){
             for(int j = 0;j<lista_ady[i].size();j++){
                 Arista e = lista_ady[i][j];
