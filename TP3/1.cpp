@@ -2,6 +2,7 @@
 #include <vector>
 using namespace std;
 
+int INF = 1e7;
 
 struct Arista
 {
@@ -11,32 +12,6 @@ struct Arista
 
 
 
-int DAG_cm(vector<vector<Arista>>&grafo,vector<pair<int,int>>&dist){
-    for(int i = 0;i<grafo.size();i++){
-        for(int j = 0;j<grafo[i].size();j++){
-            Arista e = grafo[i][j];
-            int dist_posible = dist[i].first + e.peso;
-            if(e.peso == 2){//si la arista es un pasadizo
-               if(dist[i].second + dist[e.nodo_incidente].second+1<= 3){//si la cant de pasadizos usados para conseguir la dist minima para llegar al nodo al cual apunta la arista
-                                                                       //mas la cant de pasadizos usados para conseguir la dist minima desde el nodo origen mas 1, es menor o igual a 3
-                    if(dist_posible < dist[e.nodo_incidente].first){//si encontre un mejor camino
-                            dist[e.nodo_incidente].first = dist_posible;
-                            dist[e.nodo_incidente].second = dist[e.nodo_incidente].second + dist[i].second + 1; //use un pasadizo
-                    }
-               }
-            }else{//es una arista normal
-                if((dist_posible < dist[e.nodo_incidente].first)//si puedo mejorar la distancia del nodo al que apunta la arista y si haciendolo no uso mas de 3 pasadizos
-                    && (dist[i].second + dist[e.nodo_incidente].second <= 3)){
-                    dist[e.nodo_incidente].first = dist_posible;
-                    dist[e.nodo_incidente].second = dist[e.nodo_incidente].second + dist[i].second;
-                }
-            }
-
-        }
-    }
-    int n = grafo.size()-1;
-    return dist[n].first;
-}
 
 
 int main(){
@@ -49,10 +24,13 @@ int main(){
         cin>>cant_pasadizos;
 
         vector<vector<Arista>>lista_ady(cant_salones);
-        vector<pair<int,int>>distancias_con_pasadizos(cant_salones); //la primer componente es la dist minima desde el inicio, la segunda es cuantos pasadizos use
+        vector<vector<int>>dist_con_pasadizos(cant_salones,vector<int>(4)); //me guardo el tiempo minimo para llegar a un salon i habiendo usado j pasadizos
         for(int i = 0;i<cant_salones;i++){
-            distancias_con_pasadizos[i] = make_pair(i+1,0); //inicializo todas las distancias en el valor que tomaría llegar sin pasadizos
+            for (int j = 0; j < 4; j++){
+                dist_con_pasadizos[i][j] = i+1; //inicializo todos los tiempos como si no hubiese pasadizos
+            }
         }
+
         for (int i = 0; i < cant_salones-1; i++)
         {
             Arista v1;
@@ -72,8 +50,30 @@ int main(){
             v2.nodo_incidente = final-1;
             lista_ady[inicio-1].push_back(v2);
         }
-        int res = DAG_cm(lista_ady,distancias_con_pasadizos);
+        
+        for(int i = 0;i<lista_ady.size();i++){
+            for(int j = 0;j<lista_ady[i].size();j++){
+                Arista e = lista_ady[i][j];
+                if(e.peso == 2){//si es un pasadizo
+                    for(int k = 1;k<5;k++){//voy viendo si las distancias usando 0, 1, 2 o 3 pasadizos cambian
+                        dist_con_pasadizos[e.nodo_incidente][k] = min(dist_con_pasadizos[e.nodo_incidente][k],dist_con_pasadizos[i][k-1]+2);
+                    }//hago k-1 porque hasta ese momento habria tomado k-1 pasadizos
+                }else{
+                    for(int k = 0;k<4;k++){//si no puedo tomar un pasadizo, quizas al nodo origen llegue mas rapido mediante pasadizos
+                                           //por eso actualizo tambien las distancias del nodo incidente
+                        dist_con_pasadizos[e.nodo_incidente][k] = min(dist_con_pasadizos[e.nodo_incidente][k],dist_con_pasadizos[i][k]+1);
+                    }
+                }
+            }
+        }
+        int n = dist_con_pasadizos.size()-1;
+        int res = dist_con_pasadizos[n][0];//quizas no habia pasadizos
+        for(int i = 0;i<4;i++){
+            int d = dist_con_pasadizos[n][i];
+            if(d<res) res = d;
+        }
         cout<<res<<endl;
+
         tests--;
     }
 
