@@ -1,0 +1,114 @@
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int N;
+int INF =1e6;
+
+
+vector<vector<int>> distancias(vector<vector<int>> &matriz_dist){
+    vector<vector<int>> res(N, vector<int>(N,INF));
+    for(int k=0;k<N;k++){
+        for(int i=0;i<N;i++){
+            res[i][i] = 0;
+            for(int j=0;j<i;j++){
+                res[i][j] = min(res[i][j], matriz_dist[i][j]);
+                res[j][i] = res[i][j];
+                if(k!=j && k!=i){
+                    res[i][j] = min(res[i][j], matriz_dist[i][k]+matriz_dist[k][j]);
+                    res[j][i] = min(res[i][j], matriz_dist[i][k]+matriz_dist[k][j]);
+                }
+            }
+        }
+    }
+    return res;
+}
+
+
+bool latenciasCompatibles(vector<vector<int>> &latencias){
+    for(int i = 0;i<N;i++){
+        for(int j=0;j<i;j++){
+            for(int k=0;k<N;k++){
+                if(k!=i && k!=j){
+                    if(latencias[i][k] + latencias[k][j] == latencias[i][j]) break;
+                    if(latencias[i][k] + latencias[k][j] < latencias[i][j]) return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    int tests;
+    cin >> tests;
+
+    while(tests > 0){
+
+        int cant_computadoras; //N
+        cin >> cant_computadoras;
+
+        N = cant_computadoras;
+
+        vector<vector<int>>grafo(N, vector<int>(N, 0));
+
+        for(int i = 1; i<cant_computadoras;i++){
+            for(int j = 0; j<i;j++){
+                int latencia;
+                cin >> latencia;
+
+                grafo[i][j] = latencia;
+                grafo[j][i] = latencia;
+
+            }
+        }
+
+        vector<vector<int>> latencias = grafo;
+
+        bool esPosible = true;
+
+        if(N > 2){
+            esPosible = latenciasCompatibles(latencias);
+        }
+
+        if(esPosible){
+            cout << "POSIBLE" << endl;
+
+            vector<vector<int>> matriz_dist(N, vector<int>(N,INF));
+
+            for(int i=0;i<N;i++){
+                matriz_dist[i][i] = 0;
+                for(int j=0;j<i;j++){
+                    bool caminoDirecto = true;
+                    for(int k=0;k<N;k++){
+                        if(k!=j && k!=i){
+                            if(latencias[i][j] == latencias[i][k] + latencias[k][j]){
+                                caminoDirecto = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(caminoDirecto){
+                        matriz_dist[i][j] = 1;
+                        matriz_dist[j][i] = 1;
+                    }
+                }
+            }
+
+            vector<vector<int>> res = distancias(matriz_dist);
+
+            for(int i = 0; i<N; i++){
+                for(int j = 0; j<N;j++){
+                    cout << res[i][j] << " ";
+                }
+                cout << endl;
+            }
+        }else{
+            cout << "IMPOSIBLE" << endl;
+        }
+        tests--;
+    }
+    return 0;
+}
