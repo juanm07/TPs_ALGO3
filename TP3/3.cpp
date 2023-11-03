@@ -101,8 +101,10 @@ int main(){
                         vertices_filas++;
                     }
                 }
+                if((j!=0 && j!=N-1) && tablero[i][j-1] == 0 && tablero[i][j+1]) vertices_filas++;
+                
             }
-            if(cant_aguj != N) vertices_filas++; //si la fila no eran todos agujeros tengo por lo menos 1 nodo mas
+            //if(cant_aguj != N) vertices_filas++; //si la fila no eran todos agujeros tengo por lo menos 1 nodo mas
         }
         for (int j = 0; j < N; j++){
             int cant_aguj = 0;
@@ -113,9 +115,9 @@ int main(){
                         vertices_col++;
                     }
                 }
-                
+                if((i!=0 && i!=N-1) && tablero[i+1][j] == 0 && tablero[i-1][j]) vertices_col++; 
             }
-            if(cant_aguj!=N) vertices_col++;
+            //if(cant_aguj!=N) vertices_col++;
         }
         vector<vector<int>>lista_ady(vertices_col+vertices_filas+2);//vertice 0 = fuente y ultimo vertice = sumidero
         vector<vector<int>>matriz_cap(((vertices_filas+1)*(vertices_col+1)),vector<int>(((vertices_filas+1)*(vertices_col+1)),INF));
