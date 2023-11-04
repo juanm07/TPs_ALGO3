@@ -145,10 +145,10 @@ int main(){
             pos_ult_aguj_r = -1; //reseteo porque cambie de columna
             for (int i = 0; i < N; i++){
                 if(tablero[i][j] == 1){
-                    for(int k = pos_ult_aguj_r+1;k<j;k++){//todas las casillas entre el ultimo agujero encontrado y el que encontre ahora se condensan en un vertice solo
+                    for(int k = pos_ult_aguj_r+1;k<i;k++){//todas las casillas entre el ultimo agujero encontrado y el que encontre ahora se condensan en un vertice solo
                         mapeo_columnas[k][j] = num_vertice+1; 
                     }
-                    if(j>pos_ult_aguj_r+1) num_vertice++;
+                    if(i>pos_ult_aguj_r+1) num_vertice++;
                     pos_ult_aguj_r = i;
                 }
             }
