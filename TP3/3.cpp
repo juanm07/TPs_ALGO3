@@ -91,40 +91,77 @@ int main(){
                 tablero[i][j] = casillero;
             }
         }
-        int ult_aguj_r,ult_aguj_c;
-        for (int i = 0; i < N; i++){
+        int pos_ult_aguj_r =-1; //lo iniciaba en 0 y daba mal xd
+        int pos_ult_aguj_c=-1;
+        for (int i = 0; i < N; i++){//CUENTO CANTIDAD DE VERTICES FILAS
             int cant_aguj = 0;
+            pos_ult_aguj_r = -1; //reseteo porque cambie de fila
             for (int j = 0; j < N; j++){
                 if(tablero[i][j] == 1){
                     cant_aguj++;
-                    if((j!=0 && j!=N-1) && r_no_tiene_aguj_ady(i,j,N,tablero)){
-                        vertices_filas++;
-                    }
+                    if(j>pos_ult_aguj_r+1) vertices_filas++;//si tengo por lo menos un casillero vacio entre la ultima rota y la rota actual
+                    pos_ult_aguj_r = j;
                 }
-                if((j!=0 && j!=N-1) && tablero[i][j-1] == 0 && tablero[i][j+1]) vertices_filas++;
-                
             }
-            //if(cant_aguj != N) vertices_filas++; //si la fila no eran todos agujeros tengo por lo menos 1 nodo mas
+            if(N>pos_ult_aguj_r+1)vertices_filas++;//si entre el final y la ultima casilla rota tengo alguna vacia sumo otro vertice
         }
-        for (int j = 0; j < N; j++){
+        for (int j = 0; j < N; j++){//CUENTO CANTIDAD DE VERTICES COLUMNAS
             int cant_aguj = 0;
+            pos_ult_aguj_c = -1;
             for (int i = 0; i < N; i++){
                 if(tablero[i][j] == 1){
                     cant_aguj++;
-                    if((i!=0 && i!=N-1) && c_no_tiene_aguj_ady(i,j,N,tablero)){
-                        vertices_col++;
-                    }
-                }
-                if((i!=0 && i!=N-1) && tablero[i+1][j] == 0 && tablero[i-1][j]) vertices_col++; 
+                    if(pos_ult_aguj_c+1<i)vertices_col++;
+                    pos_ult_aguj_c = i;
+                } 
             }
-            //if(cant_aguj!=N) vertices_col++;
+            if(N>pos_ult_aguj_c+1) vertices_col++;
         }
         vector<vector<int>>lista_ady(vertices_col+vertices_filas+2);//vertice 0 = fuente y ultimo vertice = sumidero
-        vector<vector<int>>matriz_cap(((vertices_filas+1)*(vertices_col+1)),vector<int>(((vertices_filas+1)*(vertices_col+1)),INF));
+        vector<vector<int>>matriz_cap(((vertices_filas+1)*(vertices_col+1)),vector<int>(((vertices_filas+1)*(vertices_col+1)),0));
+        vector<vector<int>>mapeo_filas(N,vector<int>(N));
+        vector<vector<int>>mapeo_columnas(N,vector<int>(N));
+        
+        int num_vertice = 0;
+        //AHORA NECESITO DADA UNA POSICION DEL TABLERO, SABER A QUE NUMERO DE VERTICE CORRESPONDE
+        for (int i = 0; i < N; i++){//ME HAGO EL MAPEO DE CASILLEROS A VERTICES FILAS
+            pos_ult_aguj_r = -1; //reseteo porque cambie de fila
+            for (int j = 0; j < N; j++){
+                if(tablero[i][j] == 1){
+                    for(int k = pos_ult_aguj_r+1;k<j;k++){//todas las casillas entre el ultimo agujero encontrado y el que encontre ahora se condensan en un vertice solo
+                        mapeo_filas[i][k] = num_vertice+1; 
+                    }
+                    if(j>pos_ult_aguj_r+1) num_vertice++;
+                    pos_ult_aguj_r = j;
+                }
+            }
+            for(int k = pos_ult_aguj_r+1;k<N;k++){//me estaba faltando considerar el vertice que correspondia al ultimo representante de esa fila
+                mapeo_filas[i][k] = num_vertice+1; 
+            }
+            if(N>pos_ult_aguj_r+1)num_vertice++;//si entre el final y la ultima casilla rota tengo alguna vacia sumo otro vertice
+        }
+
+        for (int j = 0; j < N; j++){//ME HAGO EL MAPEO DE CASILLEROS A VERTICES COLUMNAS
+            pos_ult_aguj_r = -1; //reseteo porque cambie de columna
+            for (int i = 0; i < N; i++){
+                if(tablero[i][j] == 1){
+                    for(int k = pos_ult_aguj_r+1;k<j;k++){//todas las casillas entre el ultimo agujero encontrado y el que encontre ahora se condensan en un vertice solo
+                        mapeo_columnas[k][j] = num_vertice+1; 
+                    }
+                    if(j>pos_ult_aguj_r+1) num_vertice++;
+                    pos_ult_aguj_r = i;
+                }
+            }
+            for(int k = pos_ult_aguj_r+1;k<N;k++){//me estaba faltando considerar el vertice que correspondia al ultimo representante de esa fila
+                mapeo_columnas[k][j] = num_vertice+1; 
+            }
+            if(N>pos_ult_aguj_r+1)num_vertice++;//si entre el final y la ultima casilla rota tengo alguna vacia sumo otro vertice
+        }
+        
         for (int i = 1; i <= vertices_filas; i++){
             lista_ady[0].push_back(i);//conecto a la fuente con los vertices de filas
             lista_ady[i].push_back(0);
-            matriz_cap[0][i] = 1;
+            matriz_cap[0][i] = 1;   
             //matriz_cap[i][0] = 1; 
         }
         int m = lista_ady.size()-1;
