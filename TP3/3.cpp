@@ -4,8 +4,8 @@
 using namespace std;
 
 int n;
-vector<vector<int>> capacity;
-vector<vector<int>> adj;
+// vector<vector<int>> capacity;
+// vector<vector<int>> adj;
 int INF = 1e7;
 
 struct Vertice{
@@ -29,7 +29,7 @@ bool c_no_tiene_aguj_ady(int i,int j, int n,vector<vector<int>>&t){
 }
 
 
-int bfs(int s, int t, vector<int>& parent) {
+int bfs(int s, int t, vector<int>& parent,vector<vector<int>>&capacity,vector<vector<int>>&adj) {
     fill(parent.begin(), parent.end(), -1);
     parent[s] = -2;
     queue<pair<int, int>> q;
@@ -54,12 +54,12 @@ int bfs(int s, int t, vector<int>& parent) {
     return 0;
 }
 
-int maxflow(int s, int t) {
+int maxflow(int s, int t,vector<vector<int>>&capacity,vector<vector<int>>&adj) {
     int flow = 0;
     vector<int> parent(n);
     int new_flow;
 
-    while ((new_flow = bfs(s, t, parent))) {
+    while ((new_flow = bfs(s, t, parent,capacity,adj))) {
         flow += new_flow;
         int cur = t;
         while (cur != s) {
@@ -118,12 +118,15 @@ int main(){
             if(N>pos_ult_aguj_c+1) vertices_col++;
         }
         vector<vector<int>>lista_ady(vertices_col+vertices_filas+2);//vertice 0 = fuente y ultimo vertice = sumidero
-        vector<vector<int>>matriz_cap(((vertices_filas+1)*(vertices_col+1)),vector<int>(((vertices_filas+1)*(vertices_col+1)),0));
+        //vector<bool>conectados(vertices_col+vertices_filas+2);
+        vector<vector<int>>matriz_cap(vertices_filas+vertices_col+2,vector<int>(vertices_filas+vertices_col+2,0));
         vector<vector<int>>mapeo_filas(N,vector<int>(N));
         vector<vector<int>>mapeo_columnas(N,vector<int>(N));
         
         int num_vertice = 0;
+
         //AHORA NECESITO DADA UNA POSICION DEL TABLERO, SABER A QUE NUMERO DE VERTICE CORRESPONDE
+        
         for (int i = 0; i < N; i++){//ME HAGO EL MAPEO DE CASILLEROS A VERTICES FILAS
             pos_ult_aguj_r = -1; //reseteo porque cambie de fila
             for (int j = 0; j < N; j++){
@@ -171,6 +174,24 @@ int main(){
             matriz_cap[i][m] = 1;
             //matriz_cap[i][m] = 1; 
         }
+        for(int i = 0;i<N;i++){
+            for(int j = 0;j<N;j++){
+                if(tablero[i][j]!=1){
+                    int vertice_fila=mapeo_filas[i][j];//obtengo el numero del vertice fila de esa casilla 
+                    int vertice_col=mapeo_columnas[i][j];//obtengo el numero del vertice columna de esa casilla
+                    lista_ady[vertice_fila].push_back(vertice_col);//conecto el vertice fila con el columna
+                    lista_ady[vertice_col].push_back(vertice_fila);//conecto el vertice columna con el fila 
+                    matriz_cap[vertice_fila][vertice_col] = 1;
+                    //matriz_cap[vertice_col][vertice_fila] ya esta en 0
+                }
+
+            }
+        }
+        int cantidad_nodos = vertices_col+vertices_filas+2;
+        n = cantidad_nodos;
+        int res = maxflow(0,n-1,matriz_cap,lista_ady);
+        cout<<res<<endl;
+    
         
         tests--;
     }
