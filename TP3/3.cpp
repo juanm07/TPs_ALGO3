@@ -28,7 +28,7 @@ bool c_no_tiene_aguj_ady(int i,int j, int n,vector<vector<int>>&t){
     return (t[i-1][j] == 0 || t[i+1][j] == 0);
 }
 
-
+//IMPLEMENTACION DE LA CATEDRA (https://cp-algorithms.com/graph/edmonds_karp.html)
 int bfs(int s, int t, vector<int>& parent,vector<vector<int>>&capacity,vector<vector<int>>&adj) {
     fill(parent.begin(), parent.end(), -1);
     parent[s] = -2;
@@ -53,7 +53,7 @@ int bfs(int s, int t, vector<int>& parent,vector<vector<int>>&capacity,vector<ve
 
     return 0;
 }
-
+//IMPLEMENTACION DE LA CATEDRA (https://cp-algorithms.com/graph/edmonds_karp.html)
 int maxflow(int s, int t,vector<vector<int>>&capacity,vector<vector<int>>&adj) {
     int flow = 0;
     vector<int> parent(n);
