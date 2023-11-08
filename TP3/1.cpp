@@ -56,12 +56,12 @@ int main(){
                 Arista e = lista_ady[i][j];
                 if(e.peso == 2){//si es un pasadizo
                     for(int k = 1;k<5;k++){//voy viendo si las distancias usando 0, 1, 2 o 3 pasadizos cambian
-                        dist_con_pasadizos[e.nodo_incidente][k] = min(dist_con_pasadizos[e.nodo_incidente][k],dist_con_pasadizos[i][k-1]+2);
+                        dist_con_pasadizos[e.nodo_incidente][k] = min(dist_con_pasadizos[e.nodo_incidente][k],dist_con_pasadizos[i][k-1]+e.peso);
                     }//hago k-1 porque hasta ese momento habria tomado k-1 pasadizos
                 }else{
                     for(int k = 0;k<4;k++){//si no puedo tomar un pasadizo, quizas al nodo origen llegue mas rapido mediante pasadizos
                                            //por eso actualizo tambien las distancias del nodo incidente
-                        dist_con_pasadizos[e.nodo_incidente][k] = min(dist_con_pasadizos[e.nodo_incidente][k],dist_con_pasadizos[i][k]+1);
+                        dist_con_pasadizos[e.nodo_incidente][k] = min(dist_con_pasadizos[e.nodo_incidente][k],dist_con_pasadizos[i][k]+e.peso);
                     }
                 }
             }
